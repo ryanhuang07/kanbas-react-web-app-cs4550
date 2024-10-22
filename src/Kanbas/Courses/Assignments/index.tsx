@@ -2,8 +2,14 @@ import LessonControlButtons from "../Modules/LessonControlButtons";
 import ModuleControlButtons from "../Modules/ModuleControlButtons";
 import { FaSearch } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
+import { useParams } from "react-router";
+import * as db from "../../Database"; // Assuming this imports the updated JSON
 
 export default function Assignments() {
+    const { cid } = useParams();
+    const assignments = db.assignments;
+    const filteredAssignments = assignments.filter(assignment => assignment.course === cid);
+
     return (
         <div>
             <div className="d-flex justify-content-between mb-3">
@@ -22,6 +28,7 @@ export default function Assignments() {
                     </div>
                 </div>
             </div>
+
             <ul id="wd-assignment-list" className="list-group rounded-0">
                 <li className="wd-assignment list-group-item p-0 mb-5 fs-5 border-gray">
                     <div className="wd-title p-3 ps-2 bg-secondary">
@@ -29,58 +36,29 @@ export default function Assignments() {
                         ASSIGNMENTS
                         <ModuleControlButtons />
                     </div>
+
                     <ul className="wd-lessons list-group rounded-0">
-                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center justify-content-between">
-                            <div className="d-flex align-items-center flex-grow-1">
-                                <BsGripVertical className="me-2 fs-3" style={{ float: 'right' }} />
-                                <div className="ms-3 flex-grow-1">
-                                    <a className="wd-assignment-link text-decoration-none fs-5"
-                                        href="#/Kanbas/Courses/1234/Assignments/123">
-                                        A1 - ENV + HTML
-                                    </a>
-                                    <p className="mb-0 text-muted">
-                                        Multiple Modules | <b>Not available until</b> Sept 32 at 12:00AM | <b>Due</b> Dec 32 at 11:59PM | 100 pts
-                                    </p>
+                        {filteredAssignments.map(assignment => (
+                            <li key={assignment._id} className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center justify-content-between">
+                                <div className="d-flex align-items-center flex-grow-1">
+                                    <BsGripVertical className="me-2 fs-3" />
+                                    <div className="ms-3 flex-grow-1">
+                                        <a className="wd-assignment-link text-decoration-none fs-5"
+                                            href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                                            {assignment.title}
+                                        </a>
+                                        <p className="mb-0 text-muted">
+                                            <b>Date Available:</b> {new Date(assignment.availableFrom).toLocaleString()} | 
+                                            <b>Due:</b> {new Date(assignment.dueDate).toLocaleString()} | 
+                                            <b>Points:</b> {assignment.points}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="d-flex align-items-center">
-                                <LessonControlButtons />
-                            </div>
-                        </li>
-                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center justify-content-between">
-                            <div className="d-flex align-items-center flex-grow-1">
-                                <BsGripVertical className="me-2 fs-3" style={{ float: 'right' }} />
-                                <div className="ms-3 flex-grow-1">
-                                    <a className="wd-assignment-link text-decoration-none fs-5"
-                                        href="#/Kanbas/Courses/1234/Assignments/124">
-                                        A2 - CSS + BOOTSTRAP
-                                    </a>
-                                    <p className="mb-0 text-muted">
-                                        Multiple Modules | <b>Not available until</b> Sept 32 at 12:00AM | <b>Due</b> Dec 32 at 11:59PM | 100 pts
-                                    </p>
+                                <div className="d-flex align-items-center">
+                                    <LessonControlButtons />
                                 </div>
-                            </div>
-                            <div className="d-flex align-items-center">
-                                <LessonControlButtons />
-                            </div>
-                        </li>
-                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center justify-content-between">
-                            <div className="d-flex align-items-center flex-grow-1">
-                                <BsGripVertical className="me-2 fs-3" style={{ float: 'right' }} />
-                                <div className="ms-3 flex-grow-1">
-                                    <a className="wd-assignment-link text-decoration-none fs-5"
-                                        href="#/Kanbas/Courses/1234/Assignments/125">
-                                        A3 - JAVASCRIPT + REACT
-                                    </a>
-                                    <p className="mb-0 text-muted">
-                                        Multiple Modules | <b>Not available until</b> Sept 32 at 12:00AM | <b>Due</b> Dec 32 at 11:59PM | 100 pts
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="d-flex align-items-center">
-                                <LessonControlButtons />
-                            </div>
-                        </li>
+                            </li>
+                        ))}
                     </ul>
                 </li>
             </ul>
