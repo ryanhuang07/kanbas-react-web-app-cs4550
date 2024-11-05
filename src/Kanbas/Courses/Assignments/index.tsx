@@ -2,13 +2,19 @@ import LessonControlButtons from "../Modules/LessonControlButtons";
 import ModuleControlButtons from "../Modules/ModuleControlButtons";
 import { FaSearch } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
-import { useParams } from "react-router";
-import * as db from "../../Database"; // Assuming this imports the updated JSON
+import { useNavigate, useParams } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import AssignmentControlButtons from "./AssignmentControlButtons";
+import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
     const { cid } = useParams();
-    const assignments = db.assignments;
-    const filteredAssignments = assignments.filter(assignment => assignment.course === cid);
+    const assignments = useSelector((state: any) => state.assignmentsReducer.assignments)
+    const filteredAssignments = assignments.filter((assignment: any) => assignment.course === cid);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const isFaculty = currentUser?.role === "FACULTY";
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -22,10 +28,11 @@ export default function Assignments() {
                         className="form-control"
                         placeholder="Search..."
                     />
-                    <div>
+                    {isFaculty && (<div>
                         <button id="wd-add-assignment-group" className="btn btn-light me-2">+ Group</button>
-                        <button id="wd-add-assignment" className="btn btn-danger">+ Assignment</button>
-                    </div>
+                        <button id="wd-add-assignment" className="btn btn-danger"
+                            onClick={() => navigate(`/Kanbas/Courses/${cid}/Assignments/New`)}>+ Assignment</button>
+                    </div>)}
                 </div>
             </div>
 
@@ -34,11 +41,11 @@ export default function Assignments() {
                     <div className="wd-title p-3 ps-2 bg-secondary">
                         <BsGripVertical className="me-2 fs-3" />
                         ASSIGNMENTS
-                        <ModuleControlButtons />
+                        {/* <ModuleControlButtons /> */}
                     </div>
 
                     <ul className="wd-lessons list-group rounded-0">
-                        {filteredAssignments.map(assignment => (
+                        {filteredAssignments.map((assignment: any) => (
                             <li key={assignment._id} className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center justify-content-between">
                                 <div className="d-flex align-items-center flex-grow-1">
                                     <BsGripVertical className="me-2 fs-3" />
@@ -48,14 +55,16 @@ export default function Assignments() {
                                             {assignment.title}
                                         </a>
                                         <p className="mb-0 text-muted">
-                                            <b>Date Available:</b> {new Date(assignment.availableFrom).toLocaleString()} | 
-                                            <b>Due:</b> {new Date(assignment.dueDate).toLocaleString()} | 
+                                            <b>Date Available:</b> {new Date(assignment.availableFrom).toLocaleString()} |
+                                            <b>Due:</b> {new Date(assignment.dueDate).toLocaleString()} |
                                             <b>Points:</b> {assignment.points}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="d-flex align-items-center">
-                                    <LessonControlButtons />
+                                    <AssignmentControlButtons
+                                        assignmentId={assignment._id}
+                                        deleteAssignment={(assignmentId) => dispatch(deleteAssignment(assignmentId))} />
                                 </div>
                             </li>
                         ))}
