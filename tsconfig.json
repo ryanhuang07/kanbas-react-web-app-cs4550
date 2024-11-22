@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-, "src/kanbas-node-server-app", "kanbas-node-server-app", ]
+, "src/kanbas-node-server-app", "kanas-node-server-app", ]
 }

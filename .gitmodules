@@ -1,3 +1,3 @@
-[submodule "kanbas-react-web-app-cs4550/kanbas-node-server-app"]
-	path = ./kanbas-node-server-app
-	url = https://github.com/ryanhuang07/kanbas-node-server-app.git
+[submodule "kanbas-react-web-app-cs4550/kanas-node-server-app"]
+	path = ./kanas-node-server-app
+	url = https://github.com/ryanhuang07/kanas-node-server-app.git
