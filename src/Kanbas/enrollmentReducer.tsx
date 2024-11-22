@@ -17,7 +17,6 @@ const enrollmentsSlice = createSlice({
                 state.enrollments = state.enrollments.filter(
                     (e: any) => e._id !== existingEnrollment._id
                 );
-                console.log("meow");
             } else {
                 const newEnrollment = {
                     _id: new Date().getTime().toString(),
@@ -25,11 +24,13 @@ const enrollmentsSlice = createSlice({
                     course: course,
                 };
                 state.enrollments = [...state.enrollments, newEnrollment];
-                console.log("woof");
             }
+        },
+        setEnrollments: (state, { payload }) => {
+            state.enrollments = payload;
         },
     }
 });
 
-export const { toggleEnrollment } = enrollmentsSlice.actions;
+export const { toggleEnrollment, setEnrollments } = enrollmentsSlice.actions;
 export default enrollmentsSlice.reducer;

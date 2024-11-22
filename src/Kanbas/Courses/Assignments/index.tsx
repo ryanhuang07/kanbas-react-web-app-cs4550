@@ -5,7 +5,9 @@ import { BsGripVertical } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import AssignmentControlButtons from "./AssignmentControlButtons";
-import { deleteAssignment } from "./reducer";
+import * as assignmentClient from "./client";
+import { addAssignment, deleteAssignment, updateAssignment, editAssignment, setAssignments, } from "./reducer";
+import { useEffect } from "react";
 
 export default function Assignments() {
     const { cid } = useParams();
@@ -15,6 +17,19 @@ export default function Assignments() {
     const isFaculty = currentUser?.role === "FACULTY";
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const fetchAssignments = async () => {
+        if (!cid) return;
+        const data = await assignmentClient.fetchAssignments(cid);
+        dispatch(setAssignments(data));
+    };
+    const removeAssignment = async (assignmentId: string) => {
+        await assignmentClient.deleteAssignment(assignmentId);
+        dispatch(deleteAssignment(assignmentId));
+    };
+    
+    useEffect(() => {
+        fetchAssignments();
+    }, [cid]);
 
     return (
         <div>
@@ -64,7 +79,7 @@ export default function Assignments() {
                                 <div className="d-flex align-items-center">
                                     <AssignmentControlButtons
                                         assignmentId={assignment._id}
-                                        deleteAssignment={(assignmentId) => dispatch(deleteAssignment(assignmentId))} />
+                                        deleteAssignment={(assignmentId) => removeAssignment(assignmentId)} />
                                 </div>
                             </li>
                         ))}
