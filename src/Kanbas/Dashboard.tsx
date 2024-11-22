@@ -14,6 +14,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
     const enrollments = useSelector((state: any) => state.enrollmentReducer.enrollments);
     const isFaculty = currentUser?.role === "FACULTY";
     const isStudent = currentUser?.role === "STUDENT";
+    console.log(isStudent);
     const [showAllCourses, setShowAllCourses] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -88,6 +89,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
             <div id="wd-dashboard-courses" className="row">
                 <div className="row row-cols-1 row-cols-md-4 g-4">
                     {courses
+                        .filter(course => showAllCourses || isEnrolled(course._id))
                         .map(course => (
                             <div key={course._id} className="wd-dashboard-course col" style={{ width: "300px" }}>
                                 <div
